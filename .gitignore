@@ -1,1 +1,160 @@
+# ===========================
+# 🔒 Environment & Secrets
+# ===========================
 .env
+.env.*
+!.env.example
+
+# ===========================
+# 🐍 Python
+# ===========================
+*.py[cod]
+*$py.class
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.whl
+*.egg-info/
+.installed.cfg
+*.egg
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Celery
+celerybeat-schedule.*
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+python_stack/my_environments/*
+
+# mypy
+.mypy_cache/
+
+# ===========================
+# 🎯 Django
+# ===========================
+*.log
+*.pot
+db.sqlite3
+media/
+staticfiles/
+static_root/
+
+# Backup files
+*.bak
+
+# ===========================
+# 🤖 Together AI / API Keys
+# ===========================
+secrets.json
+api_keys.txt
+*.key
+
+# ===========================
+# 💻 IDEs & Editors
+# ===========================
+
+# PyCharm / IntelliJ
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/misc.xml
+.idea/jsLibraryMappings.xml
+.idea/**/aws.xml
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+.idea/**/gradle.xml
+.idea/**/libraries
+*.iws
+*.iml
+out/
+atlassian-ide-plugin.xml
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# ===========================
+# 🗂️ OS Files
+# ===========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# sftp
+sftp-config.json
+
+# Package control
+Control.last-run
+Control.ca-list
+Control.ca-bundle
+Control.system-ca-bundle
+GitHub.sublime-settings
+
+# mkdocs
+/site
