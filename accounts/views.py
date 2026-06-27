@@ -10,6 +10,7 @@ import requests
 from urllib.parse import urlencode
 from django.views import View
 from django.conf import settings
+from portfolios.models import Profile
 
 def login(request):
 
@@ -54,7 +55,10 @@ def register(request):
             password = reg_form.cleaned_data['password']
             user.password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
             user.save()
-            
+            Profile.objects.create(
+                user      = user,
+                full_name = f"{user.first_name} {user.last_name}",
+            )
             request.session['user_id'] = user.id 
             return redirect('dashboard:main_dashboard')
         
@@ -208,3 +212,4 @@ class GoogleCallbackView(View):
             password=None,  # No password for Google users
         )
         return user
+
