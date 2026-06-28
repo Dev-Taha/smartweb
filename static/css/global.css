@@ -1371,3 +1371,22 @@ h6 {
     color: #94a3b8;
     font-weight: 500;
 }
+
+.s3-page {
+    padding: 2.5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.s3-heading {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: .25rem;
+}
+
+.s3-sub {
+    font-size: .92rem;
+    color: #64748b;
+    margin-bottom: 0;
+}

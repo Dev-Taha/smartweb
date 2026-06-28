@@ -32,8 +32,9 @@
 
         <!-- Actions -->
         <div class="steps-actions">
-            <i class="bi bi-question-circle steps-help-icon"></i>
-            <img src="{% if request.user.profile_picture %}{{ request.user.profile_picture }}{% else %}https://i.pravatar.cc/150?img=12{% endif %}" alt="User Avatar" class="steps-avatar">
+            {% block button %}
+              
+            {% endblock button %}
         </div>
     </nav>
 
