@@ -13,6 +13,27 @@ class Profile(models.Model):
     profile_picture = models.ImageField(upload_to='profiles/', blank=True, null=True)
     institution    = models.CharField(max_length=255, blank=True, null=True)
     field_of_study = models.CharField(max_length=255, blank=True, null=True)
+
+    TEMPLATE_CLASSIC   = 'classic-scholar'
+    TEMPLATE_MODERN    = 'modern-dark'
+    TEMPLATE_MINIMAL   = 'minimalist-lab'
+    TEMPLATE_EXECUTIVE = 'executive-academic'
+
+    TEMPLATE_CHOICES = [
+        (TEMPLATE_CLASSIC, 'Classic Scholar'),
+        (TEMPLATE_MODERN, 'Modern Dark'),
+        (TEMPLATE_MINIMAL, 'Minimalist Lab'),
+        (TEMPLATE_EXECUTIVE, 'Executive Academic'),
+    ]
+
+    selected_template = models.CharField(
+        max_length=50,
+        choices=TEMPLATE_CHOICES,
+        blank=True,
+        null=True,
+        default=TEMPLATE_CLASSIC,
+    )
+
     google_scholar = models.URLField(blank=True, null=True)
     research_gate  = models.URLField(blank=True, null=True)
     created_at     = models.DateTimeField(auto_now_add=True)

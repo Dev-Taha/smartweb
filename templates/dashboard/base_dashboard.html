@@ -32,6 +32,10 @@
                 <i class="bi bi-grid-1x2"></i>
                 <span>Dashboard</span>
             </a>
+            <a href="{% url 'dashboard:edit_profile' %}" class="sidebar-link {% block nav_profile %}{% endblock %}">
+                <i class="bi bi-person-fill"></i>
+                <span>Profile</span>
+            </a>
             <a href="{% url 'dashboard:templates_dashboard' %}" class="sidebar-link {% block nav_templates %}{% endblock %}">
                 <i class="bi bi-journal-text"></i>
                 <span>Templates</span>

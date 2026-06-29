@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+
+{% block title %}
+    Onboarding
+{% endblock title %}
+
+
+{% block content %}
+    <div class="steps-wrapper">
+        <!-- Navbar -->
+        <nav class="steps-navbar">
+            <a href="" class="steps-brand">
+                <img src="{% static 'img/icon.png' %}" alt="SmartWeb Logo">
+                <span>SmartWeb</span>
+            </a>
+    
+            <!-- Steps Indicator -->
+            <div class="steps-indicator">
+                <div class="step-item {% block step1_active %}{% endblock %}">
+                    <div class="step-circle">1</div>
+                    <span>Get Started</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item {% block step2_active %}{% endblock %}">
+                    <div class="step-circle">2</div>
+                    <span>Academic Info</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item {% block step3_active %}{% endblock %}">
+                    <div class="step-circle">3</div>
+                    <span>Template Selection</span>
+                </div>
+            </div>
+    
+            <!-- Actions -->
+            <div class="steps-actions">
+                {% block button %}
+    
+                {% endblock button %}
+            </div>
+        </nav>
+    
+        <!-- Main Content -->
+        {% block step_content %}
+        {% endblock step_content %}
+    </div><!-- /steps-wrapper -->
+{% endblock %}

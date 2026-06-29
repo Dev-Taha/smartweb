@@ -1,0 +1,61 @@
+{% extends 'onboarding/onboarding_base.html' %}
+
+{% load static %}
+
+
+{% block step1_active %}active{% endblock %}
+
+{% block button %}
+<a href="{% url 'portfolios:onboarding_two' %}" class="wizard-continue-btn disabled-btn mt-0 py-2 px-4 rounded-3" style="border-radius: 0.5rem !important; font-size: 1rem; font-weight: 600;" id="continue-btn">Next Step</a>
+{% endblock button %}
+
+{% block step_content %}
+<div class="step-content-container">
+    <h1 class="step-title">How do you want to build your academic portfolio?</h1>
+    <p class="step-subtitle">Both paths lead to a live, production-ready website. Pick what fits your current data.</p>
+
+    <div class="wizard-cards-container">
+        <!-- Card 1 -->
+        <div class="wizard-card">
+            <span class="wizard-card-recommended-badge">Recommended</span>
+            <div class="wizard-card-icon">
+                <i class="bi bi-file-earmark-arrow-up"></i>
+            </div>
+            <h3 class="wizard-card-title">Upload Academic CV</h3>
+            <p class="wizard-card-desc">
+                AI reads your CV in seconds and auto-extracts your skills, publications, and background.
+            </p>
+            <div class="wizard-card-dropzone">
+                <i class="bi bi-cloud-upload"></i>
+                <span>Drop PDF or Word here</span>
+            </div>
+            <div class="wizard-card-tags">
+                <span class="wizard-tag">~30 seconds</span>
+                <span class="wizard-tag wizard-tag-primary">AI Auto-Extraction</span>
+                <span class="wizard-tag">PDF/Word</span>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="wizard-card">
+            <div class="wizard-card-icon wizard-card-icon-manual">
+                <i class="bi bi-journal-text"></i>
+            </div>
+            <h3 class="wizard-card-title">Fill it Manually</h3>
+            <p class="wizard-card-desc">
+                Enter your university publications and courses step-by-step using our structured wizard.
+            </p>
+            <div class="wizard-card-skeleton">
+                <div class="skeleton-line w-80"></div>
+                <div class="skeleton-line w-60"></div>
+                <div class="skeleton-line w-70"></div>
+            </div>
+            <div class="wizard-card-tags mt-auto">
+                <span class="wizard-tag">~5 minutes</span>
+                <span class="wizard-tag">Full Control</span>
+                <span class="wizard-tag">Form Wizard</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock step_content %}
