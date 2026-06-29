@@ -1,0 +1,16 @@
+{
+  "name": "Modern Light",
+  "slug": "modern-light",
+  "description": "Contemporary tech-research aesthetic. Centered hero, card-based publications, bold sans-serif typography.",
+  "version": "1.0.0",
+  "preview_image": "preview.png",
+  "palette": {
+    "accent": "#4f46e5",
+    "paper": "#ffffff",
+    "ink": "#0f172a",
+    "muted": "#64748b",
+    "version": "1.0",
+    "tags": ["Light Mode", "Sans-Serif", "Modern"]
+  },
+  "is_active": true
+}

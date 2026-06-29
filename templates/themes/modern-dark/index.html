@@ -1,0 +1,346 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ profile.full_name }} — {{ profile.academic_title }}</title>
+  <meta name="description" content="{% if profile.tagline %}{{ profile.tagline }}{% else %}Personal academic portfolio of {{ profile.full_name }}.{% endif %}">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #f1f5f9; --ink-soft: #cbd5e1; --muted: #64748b;
+      --hairline: #1e293b; --paper: #0a0e1a; --paper-2: #121826;
+      --accent: {{ profile.theme.palette.accent|default:"#818cf8" }};
+      --accent-soft: #1e1b4b; --accent-hover: #a5b4fc;
+      --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+      --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.5), 0 4px 10px -2px rgba(0,0,0,0.3);
+    }
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--paper); color: var(--ink); font-size: 16px; line-height: 1.6; margin: 0; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ---------- Nav ---------- */
+    .top-nav { position: sticky; top: 0; background: rgba(10,14,26,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--hairline); z-index: 100; padding: 1rem 0; }
+    .nav-inner { max-width: 1080px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; }
+    .nav-inner .brand { font-weight: 700; font-size: 1rem; color: var(--ink); text-decoration: none; margin-right: auto; }
+    .nav-inner .brand .accent { color: var(--accent); }
+    .nav-inner a { color: var(--ink-soft); text-decoration: none; font-size: 0.875rem; margin-left: 2rem; font-weight: 500; transition: color 0.15s; }
+    .nav-inner a:hover { color: var(--accent); }
+
+    /* ---------- Layout ---------- */
+    main { max-width: 1080px; margin: 0 auto; padding: 0 2rem; }
+    section { padding: 5rem 0; }
+    .section-head { text-align: center; margin-bottom: 3rem; }
+    .section-eyebrow { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 0.5rem; }
+    .section-title { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 800; letter-spacing: -0.025em; margin: 0; }
+
+    /* ---------- Hero (centered) ---------- */
+    .hero { text-align: center; padding: 5rem 0 4rem; }
+    .hero-avatar { width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 2rem; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 700; color: var(--accent); overflow: hidden; border: 4px solid var(--paper); box-shadow: var(--shadow-lg); }
+    .hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-name { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; letter-spacing: -0.04em; margin: 0 0 0.75rem; line-height: 1.05; }
+    .hero-tagline { font-size: 1.125rem; color: var(--muted); max-width: 36em; margin: 0 auto 2rem; }
+    .hero-meta { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 2rem; }
+    .hero-meta .dot-sep { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); }
+    .hero-meta .pill { padding: 0.25rem 0.75rem; background: var(--accent-soft); color: var(--accent); border-radius: 999px; font-weight: 500; font-size: 0.8rem; }
+    .hero-cta { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 3rem; flex-wrap: wrap; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--accent); color: white; padding: 0.7rem 1.25rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: background 0.15s, transform 0.15s; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); color: white; }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 0.5rem; background: transparent; color: var(--ink); padding: 0.7rem 1.25rem; border: 1px solid var(--hairline); border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-decoration: none; transition: border-color 0.15s; }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .hero-socials { display: inline-flex; gap: 0.25rem; }
+    .hero-socials a { width: 40px; height: 40px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: var(--ink-soft); text-decoration: none; transition: all 0.15s; }
+    .hero-socials a:hover { background: var(--accent-soft); color: var(--accent); }
+
+    .bio { max-width: 42em; margin: 0 auto; font-size: 1.05rem; color: var(--ink-soft); }
+    .bio p { margin: 0 0 1rem; }
+    .bio em { color: var(--accent); font-style: normal; font-weight: 600; }
+
+    /* ---------- Stats bar ---------- */
+    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; max-width: 700px; margin: 3rem auto 0; padding: 1.5rem; background: var(--paper-2); border-radius: 12px; }
+    .stat-cell { text-align: center; }
+    .stat-num { font-size: 1.75rem; font-weight: 800; color: var(--accent); line-height: 1; letter-spacing: -0.02em; }
+    .stat-name { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.35rem; }
+
+    /* ---------- Currently ---------- */
+    .currently { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; padding: 0.4rem 0.85rem; background: var(--accent-soft); color: var(--accent); border-radius: 999px; font-weight: 500; margin-top: 1.5rem; }
+    .currently::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* ---------- Research (grid of cards) ---------- */
+    .research-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .research-card { padding: 1.5rem; background: var(--paper); border: 1px solid var(--hairline); border-radius: 12px; transition: all 0.2s; }
+    .research-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+    .research-card .num { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+    .research-card h3 { font-size: 1.15rem; font-weight: 700; margin: 0.4rem 0 0.6rem; color: var(--ink); letter-spacing: -0.01em; }
+    .research-card p { font-size: 0.9rem; color: var(--ink-soft); margin: 0 0 1rem; line-height: 1.55; }
+    .research-card .tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .research-card .chip { font-size: 0.7rem; padding: 0.15rem 0.5rem; background: var(--paper-2); color: var(--ink-soft); border-radius: 4px; font-weight: 500; }
+
+    /* ---------- Publications (cards with hover) ---------- */
+    .pub-list { display: flex; flex-direction: column; gap: 0.75rem; max-width: 780px; margin: 0 auto; }
+    .pub-card { display: grid; grid-template-columns: 60px 1fr; gap: 1.25rem; padding: 1.25rem; background: var(--paper); border: 1px solid var(--hairline); border-radius: 10px; transition: all 0.2s; position: relative; }
+    .pub-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow); }
+    .pub-card.featured { background: var(--accent-soft); border-color: var(--accent); }
+    .pub-card.featured::after { content: "★"; position: absolute; top: 1.25rem; right: 1.25rem; color: var(--accent); font-size: 0.9rem; }
+    .pub-year { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 600; color: var(--accent); padding-top: 2px; }
+    .pub-title { font-weight: 600; color: var(--ink); margin-bottom: 0.3rem; line-height: 1.4; padding-right: 1.5rem; }
+    .pub-authors { font-size: 0.875rem; color: var(--ink-soft); margin-bottom: 0.2rem; }
+    .pub-authors strong { color: var(--ink); }
+    .pub-venue { font-size: 0.825rem; color: var(--muted); }
+    .pub-links { margin-top: 0.6rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .pub-links a { font-size: 0.75rem; padding: 0.25rem 0.6rem; background: var(--paper-2); color: var(--ink-soft); border-radius: 5px; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 0.3rem; transition: all 0.15s; }
+    .pub-links a:hover { background: var(--accent); color: white; }
+
+    /* ---------- Teaching ---------- */
+    .courses-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; max-width: 780px; margin: 0 auto; }
+    .course-card { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; background: var(--paper); border: 1px solid var(--hairline); border-radius: 10px; transition: border-color 0.2s; }
+    .course-card:hover { border-color: var(--accent); }
+    .course-card .code-chip { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; font-weight: 600; padding: 0.3rem 0.55rem; background: var(--accent-soft); color: var(--accent); border-radius: 5px; flex-shrink: 0; }
+    .course-info { flex: 1; min-width: 0; }
+    .course-info .name { font-weight: 600; font-size: 0.9rem; color: var(--ink); line-height: 1.3; }
+    .course-info .meta { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* ---------- Education (timeline) ---------- */
+    .timeline { max-width: 700px; margin: 0 auto; position: relative; padding-left: 2rem; }
+    .timeline::before { content: ""; position: absolute; left: 0.5rem; top: 0.5rem; bottom: 0.5rem; width: 2px; background: var(--hairline); }
+    .timeline-item { position: relative; padding: 0 0 2rem 1.5rem; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-item::before { content: ""; position: absolute; left: -1.5rem; top: 0.3rem; width: 12px; height: 12px; border-radius: 50%; background: var(--paper); border: 2px solid var(--accent); }
+    .timeline-years { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent); font-weight: 600; margin-bottom: 0.3rem; }
+    .timeline-degree { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.2rem; color: var(--ink); }
+    .timeline-degree .field { color: var(--ink-soft); font-weight: 400; }
+    .timeline-school { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 0.5rem; }
+    .timeline-detail { font-size: 0.85rem; color: var(--muted); }
+    .timeline-honor { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.55rem; background: var(--accent-soft); color: var(--accent); border-radius: 4px; margin-top: 0.5rem; }
+
+    /* ---------- Contact ---------- */
+    .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 780px; margin: 0 auto; }
+    .contact-tile { padding: 1.25rem; background: var(--paper); border: 1px solid var(--hairline); border-radius: 10px; display: flex; align-items: flex-start; gap: 0.85rem; transition: all 0.2s; text-decoration: none; }
+    .contact-tile:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .contact-tile .ico { width: 36px; height: 36px; background: var(--accent-soft); color: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .contact-tile .label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+    .contact-tile .val { font-size: 0.875rem; color: var(--ink); font-weight: 500; margin-top: 0.15rem; word-break: break-word; }
+
+    /* ---------- Footer ---------- */
+    footer { padding: 3rem 0; border-top: 1px solid var(--hairline); text-align: center; font-size: 0.825rem; color: var(--muted); margin-top: 2rem; }
+    footer strong { color: var(--accent); }
+
+    @media (max-width: 900px) {
+      .research-grid { grid-template-columns: repeat(2, 1fr); }
+      .contact-grid { grid-template-columns: repeat(2, 1fr); }
+      .courses-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 3.5rem 0; }
+      .research-grid, .contact-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 0; }
+      .nav-inner a { display: none; }
+      .pub-card { grid-template-columns: 50px 1fr; gap: 0.85rem; padding: 1rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .currently::before { animation: none; }
+      * { transition: none !important; }
+    }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="nav-inner">
+    <a href="#hero" class="brand">{{ profile.full_name }}<span class="accent">.</span></a>
+    {% if research_interests %}<a href="#research">Research</a>{% endif %}
+    {% if publications %}<a href="#publications">Publications</a>{% endif %}
+    {% if teachings %}<a href="#teaching">Teaching</a>{% endif %}
+    {% if education %}<a href="#education">Education</a>{% endif %}
+    {% if contact_links %}<a href="#contact">Contact</a>{% endif %}
+  </div>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section id="hero" class="hero">
+    <div class="hero-avatar">
+      {% if profile.profile_image %}
+        <img src="{{ profile.profile_image.url }}" alt="{{ profile.full_name }}">
+      {% else %}
+        {% with name=profile.full_name|slice:":1" %}{{ name|upper }}{% endwith %}
+      {% endif %}
+    </div>
+
+    <h1 class="hero-name">{{ profile.full_name }}</h1>
+    {% if profile.tagline %}<p class="hero-tagline">{{ profile.tagline }}</p>{% endif %}
+
+    <div class="hero-meta">
+      {% if profile.academic_title %}<span>{{ profile.academic_title }}</span>{% endif %}
+      {% if profile.academic_title and profile.institution %}<span class="dot-sep"></span>{% endif %}
+      {% if profile.institution %}<span>{{ profile.institution }}</span>{% endif %}
+    </div>
+
+    <div class="hero-cta">
+      {% if profile.cv_file %}
+        <a href="{{ profile.cv_file.url }}" class="btn-primary" target="_blank"><i class="bi bi-download"></i> Download CV</a>
+      {% endif %}
+      {% if contact_links %}
+        <div class="hero-socials">
+          {% for link in contact_links %}
+            {% if link.link_type in "email,scholar,github,linkedin,orcid,website" %}
+              <a href="{{ link.url|default:'#' }}" aria-label="{{ link.label }}"><i class="bi {{ link.icon_class }}"></i></a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="bio">
+      {% for paragraph in profile.bio_paragraphs %}
+        <p>{{ paragraph|safe }}</p>
+      {% endfor %}
+    </div>
+
+    {% if profile.current_status %}
+      <div class="currently">{{ profile.current_status }}</div>
+    {% endif %}
+
+    {% if profile.years_teaching or profile.publications_count or profile.citation_count or profile.students_supervised %}
+      <div class="stats-bar">
+        {% if profile.years_teaching %}<div class="stat-cell"><div class="stat-num">{{ profile.years_teaching }}+</div><div class="stat-name">Years</div></div>{% endif %}
+        {% if profile.publications_count %}<div class="stat-cell"><div class="stat-num">{{ profile.publications_count }}</div><div class="stat-name">Papers</div></div>{% endif %}
+        {% if profile.citation_count %}<div class="stat-cell"><div class="stat-num">{{ profile.citation_count }}{% if profile.citation_count >= 1000 %}+{% endif %}</div><div class="stat-name">Citations</div></div>{% endif %}
+        {% if profile.students_supervised %}<div class="stat-cell"><div class="stat-num">{{ profile.students_supervised }}</div><div class="stat-name">PhD students</div></div>{% endif %}
+      </div>
+    {% endif %}
+  </section>
+
+  {% if research_interests %}
+    <section id="research">
+      <div class="section-head">
+        <div class="section-eyebrow">What I work on</div>
+        <h2 class="section-title">Research Interests</h2>
+      </div>
+      <div class="research-grid">
+        {% for item in research_interests %}
+          <div class="research-card">
+            <div class="num">{{ forloop.counter|stringformat:"02d" }}</div>
+            <h3>{{ item.title }}</h3>
+            {% if item.description %}<p>{{ item.description|truncatewords:25 }}</p>{% endif %}
+            {% if item.tag_list %}
+              <div class="tags">
+                {% for tag in item.tag_list %}<span class="chip">{{ tag }}</span>{% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if publications %}
+    <section id="publications">
+      <div class="section-head">
+        <div class="section-eyebrow">Selected works</div>
+        <h2 class="section-title">Publications</h2>
+      </div>
+      <div class="pub-list">
+        {% for pub in publications %}
+          <div class="pub-card{% if pub.is_featured %} featured{% endif %}">
+            <div class="pub-year">{{ pub.year }}</div>
+            <div>
+              <div class="pub-title">{{ pub.title }}</div>
+              <div class="pub-authors">{{ pub.authors_html|safe }}</div>
+              {% if pub.venue %}<div class="pub-venue">{{ pub.venue }}</div>{% endif %}
+              <div class="pub-links">
+                {% if pub.pdf_link %}<a href="{{ pub.pdf_link }}"><i class="bi bi-file-earmark-pdf"></i> PDF</a>{% endif %}
+                {% if pub.external_url %}<a href="{{ pub.external_url }}"><i class="bi bi-link-45deg"></i> arXiv</a>{% endif %}
+                {% if pub.code_link %}<a href="{{ pub.code_link }}"><i class="bi bi-github"></i> Code</a>{% endif %}
+                {% if pub.doi %}<a href="https://doi.org/{{ pub.doi }}"><i class="bi bi-quote"></i> DOI</a>{% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if teachings %}
+    <section id="teaching">
+      <div class="section-head">
+        <div class="section-eyebrow">Courses I teach</div>
+        <h2 class="section-title">Teaching</h2>
+      </div>
+      <div class="courses-grid">
+        {% for course in teachings %}
+          <div class="course-card">
+            <div class="code-chip">{{ course.course_code }}</div>
+            <div class="course-info">
+              <div class="name">
+                {% if course.syllabus_link %}<a href="{{ course.syllabus_link }}" style="color:inherit; text-decoration:none;">{{ course.course_name }}</a>{% else %}{{ course.course_name }}{% endif %}
+              </div>
+              <div class="meta">{{ course.term }} · {{ course.get_role_display }}</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if education %}
+    <section id="education">
+      <div class="section-head">
+        <div class="section-eyebrow">My background</div>
+        <h2 class="section-title">Education</h2>
+      </div>
+      <div class="timeline">
+        {% for edu in education %}
+          <div class="timeline-item">
+            <div class="timeline-years">{{ edu.start_year }} — {{ edu.end_year|default:"present" }}</div>
+            <div class="timeline-degree">{{ edu.degree }}{% if edu.field_of_study %} <span class="field">{{ edu.field_of_study }}</span>{% endif %}</div>
+            <div class="timeline-school">{{ edu.institution }}</div>
+            {% for line in edu.description_lines %}
+              <div class="timeline-detail">{{ line|safe }}</div>
+            {% endfor %}
+            {% if edu.honor %}<span class="timeline-honor">{{ edu.honor }}</span>{% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if contact_links %}
+    <section id="contact">
+      <div class="section-head">
+        <div class="section-eyebrow">Get in touch</div>
+        <h2 class="section-title">Contact</h2>
+      </div>
+      <div class="contact-grid">
+        {% for link in contact_links %}
+          <a class="contact-tile" {% if link.url %}href="{{ link.url }}"{% else %}href="#"{% endif %} {% if link.url %}target="_blank"{% endif %}>
+            <div class="ico"><i class="bi {{ link.icon_class }}"></i></div>
+            <div>
+              <div class="label">{{ link.label }}</div>
+              <div class="val">{{ link.value }}</div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+</main>
+
+<footer>
+  Last updated {{ profile.updated_at|date:"F Y" }} · Built with <strong>SmartWeb</strong>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,334 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ profile.full_name }} — {{ profile.academic_title }}</title>
+  <meta name="description" content="{% if profile.tagline %}{{ profile.tagline }}{% else %}Personal academic portfolio of {{ profile.full_name }}.{% endif %}">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #e8e6e1; --ink-soft: #b5b3ae; --muted: #7a7a7a;
+      --hairline: #25272a; --paper: #0c0e0d; --paper-2: #16181a;
+      --accent: {{ profile.theme.palette.accent|default:"#7ba896" }};
+      --accent-soft: #1a2a23; --accent-ink: #d4e6dc;
+    }
+    * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--paper); color: var(--ink); font-size: 16px; line-height: 1.6; }
+    .display-serif { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; letter-spacing: -0.02em; }
+
+    .top-nav { position: sticky; top: 0; background: rgba(12,14,13,0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--hairline); z-index: 100; padding: 0.9rem 0; }
+    .top-nav .container { max-width: 980px; }
+    .top-nav a { color: var(--ink-soft); text-decoration: none; font-size: 0.875rem; margin-left: 1.5rem; transition: color 0.2s; }
+    .top-nav a:hover { color: var(--ink); }
+    .top-nav .brand { color: var(--ink); font-weight: 600; margin-left: 0; margin-right: auto; font-family: 'Fraunces', Georgia, serif; font-size: 1.1rem; letter-spacing: -0.01em; }
+    .top-nav .brand .dot { display: inline-block; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+
+    main.container { max-width: 980px; }
+    section { padding: 4.5rem 0; border-bottom: 1px solid var(--hairline); }
+    section:first-of-type { border-top: none; padding-top: 3.5rem; }
+    section:last-of-type { border-bottom: none; }
+    .section-label { font-size: 0.72rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em; color: var(--muted); margin-bottom: 1.5rem; }
+    .section-label::before { content: "§ "; color: var(--accent); margin-right: 2px; }
+
+    .hero-grid { display: grid; grid-template-columns: 1fr 280px; gap: 3.5rem; align-items: start; }
+    .hero-name { font-size: clamp(2.5rem, 5.5vw, 4rem); line-height: 1.02; font-weight: 500; margin-bottom: 0.5rem; color: var(--ink); }
+    .hero-tagline { font-family: 'Fraunces', serif; font-style: italic; font-size: 1.1rem; color: var(--accent); margin-bottom: 1.25rem; }
+    .hero-role { font-size: 1rem; color: var(--ink); margin-bottom: 0.15rem; }
+    .hero-institution { font-size: 0.95rem; color: var(--ink-soft); margin-bottom: 1.75rem; }
+    .hero-bio { font-size: 1.05rem; line-height: 1.7; color: var(--ink-soft); max-width: 38em; margin-bottom: 1rem; }
+    .hero-bio em { color: var(--ink); font-style: normal; border-bottom: 1.5px solid var(--accent); padding-bottom: 1px; }
+
+    .photo-frame { position: relative; width: 100%; aspect-ratio: 4/5; }
+    .photo-frame::before { content: ''; position: absolute; inset: 14px -14px -14px 14px; background: var(--accent); z-index: 0; }
+    .photo-frame img { position: relative; width: 100%; height: 100%; object-fit: cover; object-position: center top; z-index: 1; filter: grayscale(20%) contrast(1.02); display: block; }
+    .photo-fallback { position: absolute; inset: 0; background: var(--paper-2); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 4rem; font-weight: 500; color: var(--accent); z-index: 0; }
+
+    .hero-actions { display: flex; align-items: center; gap: 1.25rem; margin-top: 1.75rem; flex-wrap: wrap; }
+    .btn-cv { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--ink); color: var(--paper); padding: 0.65rem 1.1rem; border-radius: 3px; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: background 0.2s; }
+    .btn-cv:hover { background: var(--accent); color: var(--paper); }
+    .hero-socials { display: flex; gap: 1rem; }
+    .hero-socials a { color: var(--ink-soft); font-size: 1.1rem; text-decoration: none; transition: color 0.2s; }
+    .hero-socials a:hover { color: var(--accent); }
+
+    .currently { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.875rem; color: var(--ink); margin-top: 1.5rem; padding: 0.5rem 0.875rem; background: var(--accent-soft); border-radius: 3px; }
+    .currently::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; animation: pulse 2.4s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1);} 50% { opacity: 0.4; transform: scale(0.85);} }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin-top: 3.5rem; padding-top: 2rem; border-top: 1px solid var(--hairline); }
+    .stat { padding: 0.25rem 1rem; border-left: 1px solid var(--hairline); }
+    .stat:first-child { border-left: none; padding-left: 0; }
+    .stat-num { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em; }
+    .stat-num .plus { color: var(--accent); font-size: 1.25rem; vertical-align: super; margin-left: 1px; }
+    .stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-top: 0.5rem; }
+
+    .research-item { padding: 1.75rem 0; border-top: 1px solid var(--hairline); }
+    .research-item:last-child { border-bottom: 1px solid var(--hairline); }
+    .research-num { font-family: 'Fraunces', serif; font-size: 0.85rem; color: var(--muted); letter-spacing: 0.05em; }
+    .research-title { font-size: 1.5rem; font-weight: 500; margin: 0.25rem 0 0.75rem; color: var(--ink); }
+    .research-desc { color: var(--ink-soft); margin-bottom: 0.85rem; max-width: 42em; }
+    .research-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .tag { font-size: 0.75rem; color: var(--accent); background: var(--accent-soft); padding: 0.2rem 0.6rem; border-radius: 2px; font-weight: 500; }
+
+    .pub-intro { font-size: 0.92rem; color: var(--ink-soft); margin-bottom: 1.5rem; }
+    .pub-intro a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent); }
+    .pub-list { list-style: none; padding: 0; margin: 0; }
+    .pub-item { display: grid; grid-template-columns: 4rem 1fr; gap: 1.5rem; padding: 1.25rem 0; border-top: 1px solid var(--hairline); position: relative; }
+    .pub-item.featured::before { content: "Featured"; position: absolute; top: 1.25rem; right: 0; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); background: var(--accent-soft); padding: 0.15rem 0.5rem; border-radius: 2px; font-weight: 600; }
+    .pub-item:last-child { border-bottom: 1px solid var(--hairline); }
+    .pub-year { font-family: 'Fraunces', serif; font-size: 0.95rem; color: var(--muted); padding-top: 2px; }
+    .pub-title { font-size: 1rem; font-weight: 500; color: var(--ink); margin-bottom: 0.3rem; line-height: 1.45; padding-right: 5rem; }
+    .pub-authors { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 0.2rem; }
+    .pub-authors strong { color: var(--ink); font-weight: 600; }
+    .pub-venue { font-size: 0.875rem; color: var(--muted); font-style: italic; }
+    .pub-links { margin-top: 0.55rem; font-size: 0.8rem; }
+    .pub-links a { color: var(--accent); text-decoration: none; margin-right: 1.1rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.3rem; }
+    .pub-links a:hover { text-decoration: underline; }
+
+    .course { display: grid; grid-template-columns: 6.5rem 1fr auto; gap: 1.5rem; padding: 1.1rem 0; border-top: 1px solid var(--hairline); align-items: baseline; }
+    .courses-list .course:last-child { border-bottom: 1px solid var(--hairline); }
+    .course-code { font-family: 'Fraunces', serif; color: var(--ink); font-weight: 500; letter-spacing: 0.02em; }
+    .course-title { font-size: 1rem; color: var(--ink); }
+    .course-title a { color: var(--ink); text-decoration: none; }
+    .course-title a:hover { color: var(--accent); }
+    .course-title .syllabus-link { font-size: 0.8rem; color: var(--accent); margin-left: 0.5rem; text-decoration: none; font-weight: 500; }
+    .course-meta { font-size: 0.8rem; color: var(--muted); text-align: right; }
+    .course-meta .role { display: inline-block; padding: 0.1rem 0.4rem; background: var(--accent-soft); color: var(--accent); border-radius: 2px; font-weight: 500; margin-left: 0.4rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .edu-item { display: grid; grid-template-columns: 7rem 1fr; gap: 1.5rem; padding: 1.5rem 0; border-top: 1px solid var(--hairline); }
+    .edu-list .edu-item:last-child { border-bottom: 1px solid var(--hairline); }
+    .edu-years { font-family: 'Fraunces', serif; font-size: 0.95rem; color: var(--muted); padding-top: 2px; }
+    .edu-degree { font-size: 1.05rem; font-weight: 500; color: var(--ink); margin-bottom: 0.2rem; }
+    .edu-degree .field { color: var(--ink-soft); font-weight: 400; }
+    .edu-institution { font-size: 0.92rem; color: var(--ink-soft); margin-bottom: 0.3rem; }
+    .edu-thesis { font-size: 0.875rem; color: var(--muted); font-style: italic; }
+    .edu-thesis strong { font-style: normal; color: var(--ink-soft); font-weight: 500; }
+    .edu-honor { display: inline-block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); background: var(--accent-soft); padding: 0.15rem 0.5rem; border-radius: 2px; font-weight: 600; margin-top: 0.4rem; }
+
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 3rem; }
+    .contact-item { padding: 1rem 0; border-top: 1px solid var(--hairline); display: flex; gap: 1rem; align-items: flex-start; }
+    .contact-item:last-child { border-bottom: 1px solid var(--hairline); }
+    .contact-icon { width: 2rem; height: 2rem; background: var(--accent-soft); color: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.9rem; }
+    .contact-text { flex: 1; }
+    .contact-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.15rem; }
+    .contact-value { font-size: 0.95rem; color: var(--ink); }
+    .contact-value a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--accent); padding-bottom: 1px; }
+    .contact-value a:hover { color: var(--accent); }
+
+    footer { padding: 2.5rem 0; border-top: 1px solid var(--hairline); font-size: 0.8rem; color: var(--muted); }
+    footer .container { max-width: 980px; }
+
+    @media (max-width: 860px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .photo-frame { max-width: 260px; }
+      .stats { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 0; }
+      .stat { padding: 0.5rem 1rem; }
+      .stat:nth-child(3) { border-left: none; padding-left: 0; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 3rem 0; }
+      .top-nav a.section-link { display: none; }
+      .pub-item { grid-template-columns: 2.75rem 1fr; gap: 1rem; }
+      .pub-title { padding-right: 0; }
+      .pub-item.featured::before { position: static; display: inline-block; margin-bottom: 0.4rem; }
+      .course { grid-template-columns: 1fr; gap: 0.2rem; padding: 1rem 0; }
+      .course-meta { text-align: left; }
+      .contact-grid { grid-template-columns: 1fr; gap: 0; }
+      .edu-item { grid-template-columns: 1fr; gap: 0.4rem; }
+      .hero-name { font-size: 2.5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .currently::before { animation: none; }
+    }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <div class="container d-flex align-items-center">
+    <a href="#about" class="brand"><span class="dot"></span>{{ profile.full_name }}</a>
+    <a href="#about"        class="section-link">About</a>
+    {% if research_interests %}<a href="#research"     class="section-link">Research</a>{% endif %}
+    {% if publications %}<a href="#publications" class="section-link">Publications</a>{% endif %}
+    {% if teachings %}<a href="#teaching"     class="section-link">Teaching</a>{% endif %}
+    {% if education %}<a href="#education"    class="section-link">Education</a>{% endif %}
+    {% if contact_links %}<a href="#contact"      class="section-link">Contact</a>{% endif %}
+  </div>
+</nav>
+
+<main class="container">
+
+  <section id="about">
+    <div class="section-label">About</div>
+    <div class="hero-grid">
+      <div>
+        <h1 class="hero-name display-serif">{{ profile.full_name }}</h1>
+        {% if profile.tagline %}<p class="hero-tagline">{{ profile.tagline }}</p>{% endif %}
+        {% if profile.academic_title %}<p class="hero-role">{{ profile.academic_title }}</p>{% endif %}
+        {% if profile.institution %}<p class="hero-institution">{{ profile.institution }}</p>{% endif %}
+        {% for paragraph in profile.bio_paragraphs %}
+          <p class="hero-bio">{{ paragraph|safe }}</p>
+        {% endfor %}
+        <div class="hero-actions">
+          {% if profile.cv_file %}
+            <a href="{{ profile.cv_file.url }}" class="btn-cv" target="_blank"><i class="bi bi-download"></i> Download CV</a>
+          {% endif %}
+          {% if contact_links %}
+            <div class="hero-socials">
+              {% for link in contact_links %}
+                {% if link.link_type in "email,scholar,github,linkedin,orcid,website" %}
+                  <a href="{{ link.url|default:'#' }}" aria-label="{{ link.label }}"><i class="bi {{ link.icon_class }}"></i></a>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+        {% if profile.current_status %}<div class="currently">{{ profile.current_status }}</div>{% endif %}
+      </div>
+      <div>
+        <div class="photo-frame">
+          <div class="photo-fallback">
+            {% with name=profile.full_name|slice:":1" %}{{ name|upper }}{% endwith %}{% with last=profile.user.last_name|slice:":1" %}{{ last|upper }}{% endwith %}
+          </div>
+          {% if profile.profile_image %}
+            <img src="{{ profile.profile_image.url }}" alt="Portrait of {{ profile.full_name }}">
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% if profile.years_teaching or profile.publications_count or profile.citation_count or profile.students_supervised %}
+      <div class="stats">
+        {% if profile.years_teaching %}<div class="stat"><div class="stat-num">{{ profile.years_teaching }}<span class="plus">+</span></div><div class="stat-label">Years teaching</div></div>{% endif %}
+        {% if profile.publications_count %}<div class="stat"><div class="stat-num">{{ profile.publications_count }}</div><div class="stat-label">Publications</div></div>{% endif %}
+        {% if profile.citation_count %}<div class="stat"><div class="stat-num">{{ profile.citation_count }}{% if profile.citation_count >= 1000 %}<span class="plus">+</span>{% endif %}</div><div class="stat-label">Citations</div></div>{% endif %}
+        {% if profile.students_supervised %}<div class="stat"><div class="stat-num">{{ profile.students_supervised }}</div><div class="stat-label">PhD supervised</div></div>{% endif %}
+      </div>
+    {% endif %}
+  </section>
+
+  {% if research_interests %}
+    <section id="research">
+      <div class="section-label">Research</div>
+      {% for item in research_interests %}
+        <div class="research-item">
+          <div class="research-num">{{ forloop.counter|stringformat:"02d" }} / {{ research_interests|length|stringformat:"02d" }}</div>
+          <h3 class="research-title display-serif">{{ item.title }}</h3>
+          {% if item.description %}<p class="research-desc">{{ item.description }}</p>{% endif %}
+          {% if item.tag_list %}<div class="research-tags">{% for tag in item.tag_list %}<span class="tag">{{ tag }}</span>{% endfor %}</div>{% endif %}
+        </div>
+      {% endfor %}
+    </section>
+  {% endif %}
+
+  {% if publications %}
+    <section id="publications">
+      <div class="section-label">Selected publications</div>
+      <ol class="pub-list">
+        {% for pub in publications %}
+          <li class="pub-item{% if pub.is_featured %} featured{% endif %}">
+            <div class="pub-year">{{ pub.year }}</div>
+            <div>
+              <div class="pub-title">{{ pub.title }}</div>
+              <div class="pub-authors">{{ pub.authors_html|safe }}</div>
+              {% if pub.venue %}<div class="pub-venue">{{ pub.venue }}</div>{% endif %}
+              <div class="pub-links">
+                {% if pub.pdf_link %}<a href="{{ pub.pdf_link }}"><i class="bi bi-file-earmark-pdf"></i> PDF</a>{% endif %}
+                {% if pub.external_url %}<a href="{{ pub.external_url }}"><i class="bi bi-link-45deg"></i> arXiv</a>{% endif %}
+                {% if pub.code_link %}<a href="{{ pub.code_link }}"><i class="bi bi-github"></i> Code</a>{% endif %}
+                {% if pub.doi %}<a href="https://doi.org/{{ pub.doi }}"><i class="bi bi-quote"></i> DOI</a>{% endif %}
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ol>
+    </section>
+  {% endif %}
+
+  {% if teachings %}
+    <section id="teaching">
+      <div class="section-label">Teaching</div>
+      <p class="pub-intro">Current and recent courses.</p>
+      <div class="courses-list">
+        {% for course in teachings %}
+          <div class="course">
+            <div class="course-code">{{ course.course_code }}</div>
+            <div class="course-title">
+              {% if course.syllabus_link %}<a href="{{ course.syllabus_link }}">{{ course.course_name }}</a>{% else %}{{ course.course_name }}{% endif %}
+              {% if course.syllabus_link %}<a href="{{ course.syllabus_link }}" class="syllabus-link">syllabus ↗</a>{% endif %}
+            </div>
+            <div class="course-meta">{{ course.term }} <span class="role">{{ course.get_role_display }}</span></div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if education %}
+    <section id="education">
+      <div class="section-label">Education</div>
+      <div class="edu-list">
+        {% for edu in education %}
+          <div class="edu-item">
+            <div class="edu-years">{{ edu.start_year }} — {{ edu.end_year|default:"present" }}</div>
+            <div>
+              <div class="edu-degree">{{ edu.degree }}{% if edu.field_of_study %} <span class="field">{{ edu.field_of_study }}</span>{% endif %}</div>
+              <div class="edu-institution">{{ edu.institution }}</div>
+              {% for line in edu.description_lines %}<div class="edu-thesis">{{ line|safe }}</div>{% endfor %}
+              {% if edu.honor %}<span class="edu-honor">{{ edu.honor }}</span>{% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if contact_links %}
+    <section id="contact">
+      <div class="section-label">Contact</div>
+      <div class="contact-grid">
+        <div>
+          {% for link in contact_links %}{% if forloop.counter0|divisibleby:2 %}
+            <div class="contact-item">
+              <div class="contact-icon"><i class="bi {{ link.icon_class }}"></i></div>
+              <div class="contact-text">
+                <div class="contact-label">{{ link.label }}</div>
+                <div class="contact-value">{% if link.url %}<a href="{{ link.url }}">{{ link.value }}</a>{% else %}{{ link.value }}{% endif %}</div>
+              </div>
+            </div>
+          {% endif %}{% endfor %}
+        </div>
+        <div>
+          {% for link in contact_links %}{% if not forloop.counter0|divisibleby:2 %}
+            <div class="contact-item">
+              <div class="contact-icon"><i class="bi {{ link.icon_class }}"></i></div>
+              <div class="contact-text">
+                <div class="contact-label">{{ link.label }}</div>
+                <div class="contact-value">{% if link.url %}<a href="{{ link.url }}">{{ link.value }}</a>{% else %}{{ link.value }}{% endif %}</div>
+              </div>
+            </div>
+          {% endif %}{% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+</main>
+
+<footer>
+  <div class="container d-flex justify-content-between flex-wrap gap-2">
+    <div>Last updated: {{ profile.updated_at|date:"F Y" }}</div>
+    <div>Built with <strong style="color: var(--accent);">SmartWeb</strong></div>
+  </div>
+</footer>
+
+</body>
+</html>

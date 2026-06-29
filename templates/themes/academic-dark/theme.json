@@ -1,0 +1,16 @@
+{
+  "name": "Academic Dark",
+  "slug": "academic-dark",
+  "description": "Dark scholarly aesthetic with serif headlines. Same structure as Academic Light, inverted for low-light reading.",
+  "version": "1.0.0",
+  "preview_image": "preview.png",
+  "palette": {
+    "accent": "#7ba896",
+    "paper": "#0c0e0d",
+    "ink": "#e8e6e1",
+    "muted": "#7a7a7a",
+    "version": "1.0",
+    "tags": ["Dark Mode", "Serif"]
+  },
+  "is_active": true
+}

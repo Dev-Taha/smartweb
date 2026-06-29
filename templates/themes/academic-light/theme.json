@@ -1,0 +1,14 @@
+{
+  "name": "Academic Light",
+  "slug": "academic-light",
+  "description": "Clean serif-and-sans for research-focused profiles",
+  "author": "SmartWeb Team",
+  "version": "1.0.0",
+  "preview_image": "preview.png",
+  "supports_sections": ["about", "research", "publications", "teaching", "education", "contact"],
+  "palette": {
+    "accent": "#2d4a3e",
+    "paper": "#fbfaf7",
+    "ink": "#111111"
+  }
+}

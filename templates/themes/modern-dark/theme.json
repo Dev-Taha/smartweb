@@ -1,0 +1,16 @@
+{
+  "name": "Modern Dark",
+  "slug": "modern-dark",
+  "description": "Contemporary dark mode for tech-research profiles. Centered hero, card-based publications, indigo glow.",
+  "version": "1.0.0",
+  "preview_image": "preview.png",
+  "palette": {
+    "accent": "#818cf8",
+    "paper": "#0a0e1a",
+    "ink": "#f1f5f9",
+    "muted": "#64748b",
+    "version": "1.0",
+    "tags": ["Dark Mode", "Sans-Serif", "Modern"]
+  },
+  "is_active": true
+}
