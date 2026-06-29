@@ -20,9 +20,10 @@
         <!-- User Profile -->
         <div class="sidebar-user">
             {% if profile.profile_picture %}
-            <img src="{{ profile.profile_picture.url }}" alt="User Avatar" class="sidebar-avatar"> {% elif
-            user.profile_picture %}
-            <img src="{{ user.profile_picture }}" alt="User Avatar" class="sidebar-avatar"> {% else %}
+            <img src="{{ profile.profile_picture.url }}" alt="User Avatar" class="sidebar-avatar">
+            {% elif user.profile_picture %}
+            <img src="{{ user.profile_picture }}" alt="User Avatar" class="sidebar-avatar">
+            {% else %}
             <img src="https://i.pravatar.cc/150?img=12" alt="User Avatar" class="sidebar-avatar">
             {% endif %}
             <div>
