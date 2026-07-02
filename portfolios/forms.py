@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile, Publication, Teaching, Media, Content, Page
+from .models import Profile, Publication, Teaching, Media, Page,ContactLink,Education
 
 
 # ── 1. Personal Info ─────────────────────────────────────────────────────
@@ -136,4 +136,33 @@ class PageForm(forms.ModelForm):
             'order_index': forms.NumberInput(attrs={
                 'class': 'form-control'
             }),
+        }
+
+
+# ── 4. Education ─────────────────────────────────────────────────────────
+class EducationForm(forms.ModelForm):
+    class Meta:
+        model  = Education
+        fields = ['degree', 'field_of_study', 'institution', 'start_year', 'end_year', 'description', 'honor']
+        widgets = {
+            'degree': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "e.g. Ph.D."}),
+            'field_of_study': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "e.g. Computer Science"}),
+            'institution': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "e.g. MIT"}),
+            'start_year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': "e.g. 2018"}),
+            'end_year': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': "e.g. 2022 (leave blank if ongoing)"}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': "Dissertation title, advisor..."}),
+            'honor': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "e.g. Summa Cum Laude (optional)"}),
+        }
+
+
+# ── 5. ContactLink ────────────────────────────────────────────────────────
+class ContactLinkForm(forms.ModelForm):
+    class Meta:
+        model  = ContactLink
+        fields = ['label', 'value', 'url', 'link_type']
+        widgets = {
+            'label': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "e.g. Office Email"}),
+            'value': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "e.g. sarah@mit.edu"}),
+            'url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': "https://... (optional)"}),
+            'link_type': forms.Select(attrs={'class': 'form-select'}),
         }
