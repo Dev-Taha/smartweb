@@ -220,18 +220,6 @@ class ContactLinkForm(forms.ModelForm):
             'url': forms.URLInput(attrs={'class': 'form-control', 'placeholder': "https://... (optional)"}),
             'link_type': forms.Select(attrs={'class': 'form-select'}),
         }
-
-
-# EducationFormSet = inlineformset_factory(
-#     Profile, Education, fields=('degree', 'field_of_study', 'institution', 'start_year', 'end_year'),
-#     extra=1, can_delete=True
-# )
-
-# ContactLinkFormSet = inlineformset_factory(
-#     Profile, ContactLink, fields=('label', 'value', 'url', 'link_type'),
-#     extra=1, can_delete=True
-# )
-
 # ── FormSets ──────────────────────────────────────────────────────────────
 PublicationFormSet = inlineformset_factory(
     Profile, Publication,
