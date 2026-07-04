@@ -526,7 +526,7 @@ function filterAssets(query) {
     let   found = 0;  // counter for how many rows are visible
 
     rows.forEach(row => {
-        // data-title holds the lowercase title set by Django (e.g. "machine learning 101")
+        // data-title holds the lowercase title set  ("machine learning 101")
         const match = !q || row.dataset.title.includes(q);
         row.style.display = match ? '' : 'none';  // '' = visible, 'none' = hidden
         if (match) found++;
