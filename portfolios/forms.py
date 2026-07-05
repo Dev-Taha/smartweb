@@ -217,6 +217,14 @@ class EducationForm(forms.ModelForm):
         cleaned_data = super().clean()
         start = cleaned_data.get("start_year")
         end = cleaned_data.get("end_year")
+
+        has_any_details = any(
+            cleaned_data.get(field) not in (None, "", [])
+            for field in ["degree", "field_of_study", "institution", "description", "honor", "end_year"]
+        )
+        if has_any_details and not start:
+            self.add_error("start_year", "Please enter a start year if you provide any education details.")
+
         if end and start and end < start:
             self.add_error("end_year", "End year cannot be before start year.")
         return cleaned_data

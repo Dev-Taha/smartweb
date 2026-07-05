@@ -31,6 +31,27 @@ from .models import Profile, Publication, Teaching, Theme
 from django.contrib import messages
 from .forms import ProfileForm, PublicationForm, TeachingForm, EducationFormSet
 
+
+def _form_has_data(form):
+    """Return True when a bound form contains meaningful user input."""
+    if not form.is_bound:
+        return False
+
+    for field_name in form.fields:
+        if field_name in {'DELETE'}:
+            continue
+        value = form.cleaned_data.get(field_name)
+        if value not in (None, '', []):
+            return True
+    return False
+
+
+def _is_empty_optional_form(form):
+    """Return True for new optional forms that contain no meaningful input."""
+    if form.instance.pk:
+        return False
+    return not _form_has_data(form)
+
 logger = logging.getLogger(__name__)
 
 CV_TASKS: dict[str, dict] = {}
@@ -168,16 +189,24 @@ def onboarding_two(request):
         if forms_valid:
             profile_form.save()
 
-            publication = publication_form.save(commit=False)
-            publication.profile = profile
-            publication.save()
+            if _form_has_data(publication_form):
+                publication = publication_form.save(commit=False)
+                publication.profile = profile
+                publication.save()
 
-            teaching = teaching_form.save(commit=False)
-            teaching.profile = profile
-            teaching.save()
+            if _form_has_data(teaching_form):
+                teaching = teaching_form.save(commit=False)
+                teaching.profile = profile
+                teaching.save()
 
-            # Save education formset (create/update/delete automatically)
-            education_formset.save()
+            # Ignore empty education rows so optional blank entries do not break saving.
+            valid_education_forms = [
+                form for form in education_formset.forms
+                if not _is_empty_optional_form(form)
+            ]
+            if valid_education_forms:
+                education_formset.forms = valid_education_forms
+                education_formset.save()
 
             pub_titles = request.POST.getlist('pub_title[]')
             pub_dates = request.POST.getlist('pub_date[]')
