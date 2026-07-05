@@ -672,18 +672,64 @@ function updateStepButtons() {
         const nextButton = document.querySelector(`[data-wizard-next='${idx}']`);
         if (!nextButton) return;
         const requiredFields = getSectionRequiredFields(section);
+        let done = false;
         if (requiredFields.length === 0) {
             nextButton.disabled = false;
-            return;
+            done = sectionHasContent(section);
+        } else {
+            const valid = Array.from(requiredFields).every(el => {
+                if (el.type === 'checkbox' || el.type === 'radio') {
+                    return el.checked;
+                }
+                return String(el.value || '').trim();
+            });
+            nextButton.disabled = !valid;
+            done = valid;
         }
-        const valid = Array.from(requiredFields).every(el => {
-            if (el.type === 'checkbox' || el.type === 'radio') {
-                return el.checked;
-            }
-            return el.value.trim();
-        });
-        nextButton.disabled = !valid;
+        setSectionDone(idx, done);
     });
+}
+
+function sectionHasContent(section) {
+    if (!section) return false;
+    const inputs = section.querySelectorAll('input, textarea, select');
+    for (const el of inputs) {
+        if (!el.name) continue;
+        // skip management/formset hidden inputs
+        if (el.type === 'hidden' && (el.name.indexOf('TOTAL_FORMS') !== -1 || el.name.indexOf('INITIAL_FORMS') !== -1 || el.name.indexOf('__prefix__') !== -1)) continue;
+        if (el.type === 'checkbox' || el.type === 'radio') {
+            if (el.checked) return true;
+            continue;
+        }
+        if (el.value && String(el.value).trim() !== '') return true;
+    }
+    // also check legacy repeatable containers for non-formset setups
+    const pubRows = section.querySelectorAll('#pub-container .pub-row, .pub-row');
+    for (const r of pubRows) {
+        const v = r.querySelector('input, textarea');
+        if (v && String(v.value || '').trim() !== '') return true;
+    }
+    const teachRows = section.querySelectorAll('#teach-container .teach-row, .teach-row');
+    for (const r of teachRows) {
+        const v = r.querySelector('input, textarea');
+        if (v && String(v.value || '').trim() !== '') return true;
+    }
+    return false;
+}
+
+function setSectionDone(idx, done) {
+    sectionDone[idx] = !!done;
+    const dot = document.getElementById('dot-' + idx);
+    if (!dot) return;
+    if (done) {
+        dot.classList.add('done');
+        dot.innerHTML = '<i class="bi bi-check-lg" style="font-size:.65rem;"></i>';
+    } else {
+        dot.classList.remove('done');
+        dot.innerHTML = '';
+    }
+    updateProgress();
+    checkAllDone();
 }
 
 function updateFinalContactState() {

@@ -231,6 +231,15 @@ class EducationForm(forms.ModelForm):
         start = cleaned_data.get("start_year")
         end = cleaned_data.get("end_year")
 
+        # If one year is provided but the other is missing, assume a single-year entry
+        # (e.g., short certificate Year: 2026) and copy the provided year into the missing field.
+        if (start in (None, "") or start is None) and end not in (None, ""):
+            cleaned_data["start_year"] = end
+            start = cleaned_data.get("start_year")
+        if (end in (None, "") or end is None) and start not in (None, ""):
+            cleaned_data["end_year"] = start
+            end = cleaned_data.get("end_year")
+
         has_any_details = any(
             cleaned_data.get(field) not in (None, "", [])
             for field in ["degree", "field_of_study", "institution", "description", "honor", "end_year"]

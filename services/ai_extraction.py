@@ -5,6 +5,7 @@ from datetime import date, datetime
 from typing import Any
 
 import requests
+import logging
 from django.conf import settings
 from django.core.files.base import ContentFile
 
@@ -94,6 +95,9 @@ CV Text:
 
 Return only the JSON object.
 
+Special handling for education dates:
+- If an education entry in the CV mentions only a single year (for example a short certificate or a single-year listing like "2026"), then set both `start_year` and `end_year` to that year in the returned JSON. Do not leave one of them null when a single explicit year is present.
+
 """
 
 
@@ -102,6 +106,7 @@ def _call_together(cv_text: str) -> str:
     payload = {
         "model": settings.TOGETHER_MODEL,
         "temperature": 0.1,
+        "max_tokens": 8000,
         "messages": [
             {"role": "system", "content": "You are a robust JSON extraction assistant."},
             {"role": "user", "content": PROMPT_TEMPLATE.format(cv_text=cv_text)}
@@ -127,12 +132,36 @@ def _strip_non_json(text: str) -> str:
     match = re.search(r"\{.*\}$", text, re.DOTALL)
     if match:
         return match.group(0)
+
+    # Best effort: if the response begins with JSON but was truncated, try to close any missing braces.
+    if text.startswith("{"):
+        brace_balance = 0
+        in_string = False
+        escape = False
+        for char in text:
+            if escape:
+                escape = False
+                continue
+            if char == "\\":
+                escape = True
+                continue
+            if char == '"':
+                in_string = not in_string
+            if in_string:
+                continue
+            if char == '{':
+                brace_balance += 1
+            elif char == '}':
+                brace_balance -= 1
+        if brace_balance > 0:
+            return text + ('}' * brace_balance)
     raise ValueError("Could not extract JSON object from response")
 
 
 def extract_cv_data(cv_text: str) -> dict[str, Any]:
     last_error = None
     for attempt in range(MAX_RETRIES):
+        raw = None
         try:
             raw = _call_together(cv_text)
             json_text = _strip_non_json(raw)
@@ -142,6 +171,13 @@ def extract_cv_data(cv_text: str) -> dict[str, Any]:
             return _normalize_extracted_data(extracted)
         except (ValueError, json.JSONDecodeError, requests.RequestException) as exc:
             last_error = exc
+            # If the error is failure to strip JSON, log the raw Together response for debugging.
+            if isinstance(exc, ValueError) and str(exc).startswith("Could not extract JSON object"):
+                try:
+                    logger = logging.getLogger(__name__)
+                    logger.error("Failed to extract JSON from Together response; response was truncated or malformed.")
+                except Exception:
+                    pass
             if attempt + 1 < MAX_RETRIES:
                 continue
             raise
