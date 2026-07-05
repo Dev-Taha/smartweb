@@ -677,7 +677,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Photo preview listener
-    const fileInput = document.querySelector('input[type="file"]');
+    const fileInput = document.getElementById('profile-image-input') || document.querySelector('input[type="file"]');
     if (fileInput) {
         fileInput.addEventListener('change', function () {
             const f = this.files[0];

@@ -53,8 +53,12 @@ class ProfileForm(forms.ModelForm):
                 'rows': 4,
                 'placeholder': 'Write a short academic biography...'
             }),
-           'profile_image': forms.FileInput(attrs={'class': 'form-control'}),
-           
+            'profile_image': forms.FileInput(attrs={
+                'class': 'form-control d-none',
+                'id': 'profile-image-input',
+                'accept': 'image/*'
+            }),
+            
             'google_scholar': forms.URLInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'https://scholar.google.com/...',
