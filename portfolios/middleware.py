@@ -8,6 +8,11 @@ ONBOARDING_PATHS = {
     '/portfolios/onboarding-three/',
 }
 
+# Paths that should NOT be blocked even if onboarding is incomplete
+ONBOARDING_EXEMPTIONS = {
+    '/portfolios/preview/',  # Allow preview iframe to load during onboarding
+}
+
 class OnboardingMiddleware:
     """Ensure onboarding is completed before allowing access to the main app.
 
@@ -41,7 +46,10 @@ class OnboardingMiddleware:
 
         onboarding_completed = bool(getattr(profile, 'onboarding_completed', False))
 
-        if not onboarding_completed and path not in ONBOARDING_PATHS:
+        # Allow exempted paths even if onboarding is incomplete
+        is_exempted_path = any(path.startswith(exemption) for exemption in ONBOARDING_EXEMPTIONS)
+
+        if not onboarding_completed and path not in ONBOARDING_PATHS and not is_exempted_path:
             return redirect('portfolios:onboarding_one')
 
         if onboarding_completed and path in ONBOARDING_PATHS:
