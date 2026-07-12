@@ -32,7 +32,11 @@ DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 # ALLOWED_HOSTS configuration
 if DEBUG:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver']
+    ALLOWED_HOSTS = ['localhost',
+                     "production-django-project.onrender.com",
+ '127.0.0.1',
+ 'testserver'
+ ]
 else:
     allowed_hosts_str = os.getenv('ALLOWED_HOSTS', '')
     if not allowed_hosts_str:
