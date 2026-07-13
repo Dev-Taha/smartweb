@@ -16,7 +16,10 @@ from types import SimpleNamespace
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import OperationalError
-from django.http import JsonResponse, Http404
+import mimetypes
+import os
+
+from django.http import FileResponse, JsonResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -491,3 +494,19 @@ def portfolio_preview(request, theme_slug):
         'education': profile.education_entries.all() if hasattr(profile, 'education_entries') else [],
         'contact_links': profile.contact_links.all() if hasattr(profile, 'contact_links') else [],
     })
+
+
+def download_cv(request, slug):
+    profile = get_object_or_404(Profile, slug=slug)
+    if not profile.is_published and request.session.get('user_id') != profile.user_id:
+        raise Http404('CV not found.')
+    if not profile.cv_file:
+        raise Http404('CV not found.')
+    file_path = profile.cv_file.path
+    content_type, _ = mimetypes.guess_type(file_path)
+    if not content_type:
+        content_type = 'application/octet-stream'
+    response = FileResponse(open(file_path, 'rb'), content_type=content_type)
+    filename = os.path.basename(file_path)
+    response['Content-Disposition'] = f'inline; filename="{filename}"'
+    return response
