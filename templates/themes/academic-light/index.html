@@ -593,9 +593,6 @@
         {% endfor %}
 
         <div class="hero-actions">
-          {% if profile.cv_file %}
-            <a href="{% url 'portfolios:download_cv' slug=profile.slug %}" class="btn-cv" target="_blank"><i class="bi bi-download"></i> Download CV</a>
-          {% endif %}
           {% if contact_links %}
             <div class="hero-socials">
               {% for link in contact_links %}
