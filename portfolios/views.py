@@ -15,6 +15,7 @@ from types import SimpleNamespace
 
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.db import OperationalError
 
 from django.http import JsonResponse, Http404
@@ -500,4 +501,7 @@ def download_cv(request, slug):
         raise Http404('CV not found.')
     if not profile.cv_file:
         raise Http404('CV not found.')
+    if not default_storage.exists(profile.cv_file.name):
+        logger.warning('CV file missing on Cloudinary: %s', profile.cv_file.name)
+        raise Http404('CV file not found.')
     return redirect(profile.cv_file.url)
